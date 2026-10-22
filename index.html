@@ -1,0 +1,1087 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="DevHub is a free developer toolkit built by Sayeef Adnan. Format JSON, encode Base64, generate UUIDs, test regex, decode JWT and create CSS gradients.">
+  <meta name="author" content="Sayeef Adnan">
+  <title>DevHub — Developer Toolbox</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --surface: #11182b;
+      --surface-2: #18223a;
+      --border: #293550;
+      --text: #edf2ff;
+      --muted: #9ba9c4;
+      --primary: #8b7cff;
+      --primary-hover: #a79bff;
+      --success: #42d9a0;
+      --danger: #ff7285;
+      --radius: 16px;
+      --shadow: 0 16px 45px #00000020;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 5% 0%, #6d5df018, transparent 40%),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.6 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    body.light {
+      color-scheme: light;
+      --bg: #f3f5fb;
+      --surface: #ffffff;
+      --surface-2: #edf0fa;
+      --border: #dce2ef;
+      --text: #19223b;
+      --muted: #64708b;
+      --primary: #6554e8;
+      --primary-hover: #5140d0;
+      --shadow: 0 12px 35px #26345a12;
+      background: radial-gradient(ellipse at 5% 0%, #8b7cff12, transparent 45%), var(--bg);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible,
+    textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
+    }
+
+    .shell { width: min(1180px, 100% - 36px); margin: auto; }
+
+    header {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: white;
+      font-weight: 900;
+      font-size: 22px;
+      background: linear-gradient(135deg, #9c83ff, #6255e9);
+      box-shadow: 0 6px 22px #8171ff35;
+    }
+
+    .brand-name { font-size: 21px; font-weight: 850; letter-spacing: -.7px; }
+    .brand-name span { color: var(--primary); }
+    .brand-caption { font-size: 11px; color: var(--muted); margin-top: -3px; }
+
+    .icon-button, .button, .tool-link, .chip {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+
+    .icon-button { width: 42px; height: 42px; font-size: 19px; }
+    .icon-button:hover, .button:hover, .tool-link:hover {
+      border-color: var(--primary);
+    }
+
+    .hero { padding: 46px 0 28px; text-align: center; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 11%, transparent);
+      border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(34px, 6vw, 58px);
+      line-height: 1.1;
+      letter-spacing: -2.5px;
+    }
+
+    .gradient-text {
+      color: var(--primary);
+      background: linear-gradient(100deg, #9b8aff, #65d9d0);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p { color: var(--muted); max-width: 610px; margin: 0 auto; }
+    .search-wrap { max-width: 530px; margin: 24px auto 0; position: relative; }
+    .search-wrap span { position: absolute; left: 15px; top: 10px; color: var(--muted); font-size: 19px; }
+
+    input, textarea, select {
+      width: 100%;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 13px;
+    }
+
+    .search-wrap input { padding-left: 44px; min-height: 45px; }
+    textarea {
+      min-height: 180px;
+      resize: vertical;
+      font: 13px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace;
+      tab-size: 2;
+    }
+
+    input[type="checkbox"] { width: auto; accent-color: var(--primary); }
+    input[type="color"] { width: 46px; height: 42px; padding: 4px; cursor: pointer; }
+    input[type="range"] { padding: 0; accent-color: var(--primary); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 235px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+      padding: 18px 0 45px;
+    }
+
+    .sidebar, .panel, .stat, .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar { padding: 15px; position: sticky; top: 16px; }
+    .section-label {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+      padding: 5px 10px 10px;
+    }
+
+    .tool-link {
+      width: 100%;
+      padding: 11px 10px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      background: transparent;
+      border-color: transparent;
+      font-size: 13px;
+    }
+
+    .tool-link .tool-icon {
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--surface-2);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .tool-link.active {
+      background: color-mix(in srgb, var(--primary) 14%, transparent);
+      border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+      color: var(--primary);
+    }
+
+    .sidebar-note {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 11px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .sidebar-note strong { color: var(--text); display: block; margin-bottom: 3px; }
+
+    .workspace { min-width: 0; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .stat { padding: 14px 16px; }
+    .stat-label { font-size: 11px; color: var(--muted); }
+    .stat-value { font-size: 20px; font-weight: 800; margin-top: 3px; }
+
+    .tool-card { padding: 22px; }
+    .tool-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .tool-heading h2 { font-size: 22px; margin: 0; letter-spacing: -.5px; }
+    .tool-heading p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .tool-badge { background: var(--surface-2); border-radius: 9px; padding: 9px 12px; font-size: 19px; }
+
+    .field { margin-bottom: 16px; min-width: 0; }
+    .field label, .label-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12px; font-weight: 750; }
+    .label-row small, .field label small { color: var(--muted); font-weight: 400; }
+    .field textarea + .hint { margin-top: 6px; }
+    .hint { color: var(--muted); font-size: 11px; }
+    .actions { display: flex; gap: 9px; flex-wrap: wrap; margin: 14px 0; }
+
+    .button { padding: 10px 14px; font-size: 12px; font-weight: 750; }
+    .button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .button.primary:hover { background: var(--primary-hover); }
+    .button.danger { color: var(--danger); }
+    .button:disabled { opacity: .5; cursor: not-allowed; }
+    .button:active { transform: translateY(1px); }
+
+    .result {
+      min-height: 47px;
+      padding: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow-wrap: anywhere;
+      font: 13px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
+    .result:empty::before { content: "Your result will appear here…"; color: var(--muted); }
+    .result.good { border-color: #42d9a055; }
+    .result.bad { border-color: #ff728555; color: var(--danger); }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .three-col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .inline-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .inline-row > input:not([type="color"]):not([type="checkbox"]) { flex: 1; min-width: 100px; }
+    .check-label { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+
+    .swatch {
+      width: 100%;
+      height: 125px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      background: #8b7cff;
+    }
+
+    .gradient-preview {
+      height: 150px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #8b7cff, #42d9a0);
+    }
+
+    .matches { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .chip { padding: 5px 9px; font-size: 11px; }
+    .match-count { color: var(--success); font-size: 12px; margin-top: 9px; }
+    .hidden { display: none !important; }
+
+    .empty-state {
+      padding: 35px 15px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0 30px;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    footer strong { color: var(--text); }
+    .toast {
+      position: fixed;
+      z-index: 99;
+      bottom: 22px;
+      left: 50%;
+      transform: translate(-50%, 15px);
+      padding: 11px 17px;
+      border-radius: 12px;
+      background: var(--text);
+      color: var(--bg);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      max-width: calc(100% - 30px);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; gap: 15px; }
+      .sidebar { position: static; padding: 11px; }
+      .sidebar .section-label, .sidebar-note { display: none; }
+      .tool-nav { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 3px; }
+      .tool-link { width: auto; flex: 0 0 auto; margin: 0; padding: 7px; }
+      .tool-link .tool-icon { width: 29px; height: 29px; }
+      .tool-link .tool-name { padding-right: 4px; }
+      .stats { gap: 8px; }
+      .stat { padding: 11px; }
+      .stat-value { font-size: 17px; }
+      .hero { padding-top: 35px; }
+    }
+
+    @media (max-width: 480px) {
+      .shell { width: calc(100% - 22px); }
+      .brand-name { font-size: 18px; }
+      .brand-caption { font-size: 10px; }
+      .hero p { font-size: 13px; }
+      .tool-card { padding: 15px; }
+      .tool-heading h2 { font-size: 19px; }
+      .two-col, .three-col { grid-template-columns: 1fr; }
+      .stats .stat-label { font-size: 10px; }
+      .tool-link { font-size: 11px; }
+      .actions .button { flex: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="shell">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">&lt;/&gt;</div>
+      <div>
+        <div class="brand-name">Dev<span>Hub</span></div>
+        <div class="brand-caption">THE DEVELOPER TOOLBOX</div>
+      </div>
+    </div>
+    <button class="icon-button" id="themeToggle" aria-label="Toggle color theme" title="Toggle theme">☀</button>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <span class="eyebrow">✦ FREE DEVELOPER UTILITIES</span>
+      <h1>Build smarter.<br><span class="gradient-text">Ship faster.</span></h1>
+      <p>A collection of handy tools that make your everyday development workflow simpler, faster and better.</p>
+      <div class="search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input id="toolSearch" type="search" placeholder="Search developer tools..." aria-label="Search developer tools">
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="sidebar" aria-label="Developer tools navigation">
+        <div class="section-label">WORKSPACE</div>
+        <nav class="tool-nav" id="toolNav">
+          <button class="tool-link active" data-tool="json"><span class="tool-icon">{ }</span><span class="tool-name">JSON Formatter</span></button>
+          <button class="tool-link" data-tool="base64"><span class="tool-icon">⇄</span><span class="tool-name">Base64 Encoder</span></button>
+          <button class="tool-link" data-tool="uuid"><span class="tool-icon">◈</span><span class="tool-name">UUID Generator</span></button>
+          <button class="tool-link" data-tool="color"><span class="tool-icon">◉</span><span class="tool-name">Color Studio</span></button>
+          <button class="tool-link" data-tool="regex"><span class="tool-icon">.*</span><span class="tool-name">Regex Tester</span></button>
+          <button class="tool-link" data-tool="jwt"><span class="tool-icon">⬡</span><span class="tool-name">JWT Decoder</span></button>
+        </nav>
+        <div class="sidebar-note">
+          <strong>⚡ Privacy first</strong>
+          Your inputs are processed locally in your browser. This app does not send them to a server.
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <div class="stats">
+          <div class="stat"><div class="stat-label">AVAILABLE TOOLS</div><div class="stat-value">06</div></div>
+          <div class="stat"><div class="stat-label">COST TO USE</div><div class="stat-value">Free</div></div>
+          <div class="stat"><div class="stat-label">ACCOUNT NEEDED</div><div class="stat-value">No</div></div>
+        </div>
+
+        <!-- JSON FORMATTER -->
+        <section class="tool-card tool-panel" id="panel-json">
+          <div class="tool-heading">
+            <div><h2>JSON Formatter</h2><p>Format, minify and validate JSON data.</p></div>
+            <div class="tool-badge">{ }</div>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="jsonInput">Input JSON</label><small id="jsonInputCount">0 characters</small></div>
+            <textarea id="jsonInput" spellcheck="false" placeholder='{"name":"Sayeef Adnan","role":"Developer","active":true}'></textarea>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="jsonFormat">Format JSON</button>
+            <button class="button" id="jsonMinify">Minify</button>
+            <button class="button" id="jsonValidate">Validate</button>
+            <button class="button" id="jsonCopy">Copy output</button>
+            <button class="button danger" id="jsonClear">Clear</button>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="jsonOutput">Output</label><small id="jsonStatus">Ready</small></div>
+            <textarea id="jsonOutput" spellcheck="false" readonly placeholder="Formatted JSON will appear here..."></textarea>
+          </div>
+        </section>
+
+        <!-- BASE64 -->
+        <section class="tool-card tool-panel hidden" id="panel-base64">
+          <div class="tool-heading">
+            <div><h2>Base64 Encoder / Decoder</h2><p>Encode or decode text using UTF-8 compatible Base64.</p></div>
+            <div class="tool-badge">⇄</div>
+          </div>
+          <div class="field">
+            <label for="base64Input">Input text</label>
+            <textarea id="base64Input" spellcheck="false" placeholder="Type or paste your text here..."></textarea>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="base64Encode">Encode</button>
+            <button class="button" id="base64Decode">Decode</button>
+            <button class="button" id="base64Copy">Copy result</button>
+            <button class="button danger" id="base64Clear">Clear</button>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="base64Output">Result</label><small id="base64Status">Ready</small></div>
+            <textarea id="base64Output" spellcheck="false" readonly placeholder="Result will appear here..."></textarea>
+          </div>
+          <p class="hint">Base64 is an encoding format, not encryption. Do not use it to protect secrets.</p>
+        </section>
+
+        <!-- UUID -->
+        <section class="tool-card tool-panel hidden" id="panel-uuid">
+          <div class="tool-heading">
+            <div><h2>UUID Generator</h2><p>Generate random version 4 UUID identifiers.</p></div>
+            <div class="tool-badge">◈</div>
+          </div>
+          <div class="field">
+            <label for="uuidCount">Number of UUIDs</label>
+            <select id="uuidCount">
+              <option value="1">1 UUID</option>
+              <option value="5" selected>5 UUIDs</option>
+              <option value="10">10 UUIDs</option>
+              <option value="25">25 UUIDs</option>
+              <option value="50">50 UUIDs</option>
+            </select>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="uuidGenerate">Generate UUIDs</button>
+            <button class="button" id="uuidCopy">Copy all</button>
+            <button class="button" id="uuidDownload">Download .txt</button>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="uuidOutput">Generated UUIDs</label><small id="uuidStatus">Ready</small></div>
+            <textarea id="uuidOutput" spellcheck="false" readonly placeholder="Click Generate UUIDs to start..."></textarea>
+          </div>
+          <p class="hint">Uses crypto.randomUUID() when available, with a cryptographically secure fallback.</p>
+        </section>
+
+        <!-- COLOR STUDIO -->
+        <section class="tool-card tool-panel hidden" id="panel-color">
+          <div class="tool-heading">
+            <div><h2>Color & Gradient Studio</h2><p>Pick colors and generate ready-to-use CSS.</p></div>
+            <div class="tool-badge">◉</div>
+          </div>
+          <div class="field">
+            <label for="colorPicker">Choose a color</label>
+            <div class="inline-row">
+              <input type="color" id="colorPicker" value="#8b7cff" aria-label="Pick a color">
+              <input type="text" id="colorHex" value="#8b7cff" aria-label="Hex color code" maxlength="7">
+            </div>
+          </div>
+          <div class="swatch" id="colorSwatch"></div>
+          <div class="two-col">
+            <div class="field"><label for="colorRgb">RGB</label><input id="colorRgb" readonly></div>
+            <div class="field"><label for="colorHsl">HSL</label><input id="colorHsl" readonly></div>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="colorCopyHex">Copy HEX</button>
+            <button class="button" id="colorCopyRgb">Copy RGB</button>
+            <button class="button" id="colorCopyHsl">Copy HSL</button>
+          </div>
+          <div style="height:1px;background:var(--border);margin:24px 0"></div>
+          <h3 style="font-size:16px;margin:0 0 15px">CSS Gradient Generator</h3>
+          <div class="two-col">
+            <div class="field"><label for="gradientStart">Start color</label><input type="color" id="gradientStart" value="#8b7cff"></div>
+            <div class="field"><label for="gradientEnd">End color</label><input type="color" id="gradientEnd" value="#42d9a0"></div>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="gradientAngle">Angle</label><span id="gradientAngleValue">135°</span></div>
+            <input type="range" id="gradientAngle" min="0" max="360" value="135">
+          </div>
+          <div class="gradient-preview" id="gradientPreview"></div>
+          <div class="field"><label for="gradientOutput">CSS code</label><input id="gradientOutput" readonly></div>
+          <button class="button primary" id="gradientCopy">Copy CSS</button>
+        </section>
+
+        <!-- REGEX -->
+        <section class="tool-card tool-panel hidden" id="panel-regex">
+          <div class="tool-heading">
+            <div><h2>Regex Tester</h2><p>Test regular expressions against your text.</p></div>
+            <div class="tool-badge">.*</div>
+          </div>
+          <div class="field">
+            <label for="regexPattern">Regular expression (without slashes)</label>
+            <input id="regexPattern" value="\\b\\w+@\\w+\\.\\w+\\b" placeholder="e.g. \d+" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="regexFlags">Flags</label>
+            <input id="regexFlags" value="gi" placeholder="g, i, m, s, u, y" spellcheck="false">
+            <div class="hint">Supported JavaScript flags: d, g, i, m, s, u, v, y. Some combinations are incompatible.</div>
+          </div>
+          <div class="field">
+            <label for="regexText">Test string</label>
+            <textarea id="regexText" spellcheck="false" placeholder="Paste text to test...">Contact us at hello@example.com or team@devhub.io</textarea>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="regexTest">Test expression</button>
+            <button class="button" id="regexCopy">Copy matches</button>
+            <button class="button danger" id="regexClear">Clear</button>
+          </div>
+          <div class="field">
+            <div class="label-row"><label>Match results</label><span id="regexCount" class="hint">Not tested</span></div>
+            <div class="result" id="regexOutput" aria-live="polite"></div>
+            <div class="matches" id="regexMatches"></div>
+          </div>
+        </section>
+
+        <!-- JWT -->
+        <section class="tool-card tool-panel hidden" id="panel-jwt">
+          <div class="tool-heading">
+            <div><h2>JWT Decoder</h2><p>Decode a JSON Web Token's header and payload locally.</p></div>
+            <div class="tool-badge">⬡</div>
+          </div>
+          <div class="field">
+            <label for="jwtInput">JSON Web Token</label>
+            <textarea id="jwtInput" spellcheck="false" placeholder="Paste your JWT here (header.payload.signature)..."></textarea>
+          </div>
+          <div class="actions">
+            <button class="button primary" id="jwtDecode">Decode token</button>
+            <button class="button" id="jwtCopyHeader">Copy header</button>
+            <button class="button" id="jwtCopyPayload">Copy payload</button>
+            <button class="button danger" id="jwtClear">Clear</button>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="jwtHeader">Decoded header</label><small id="jwtStatus">Not decoded</small></div>
+            <textarea id="jwtHeader" readonly spellcheck="false" placeholder="Header JSON..."></textarea>
+          </div>
+          <div class="field">
+            <label for="jwtPayload">Decoded payload</label>
+            <textarea id="jwtPayload" readonly spellcheck="false" placeholder="Payload JSON..."></textarea>
+          </div>
+          <div class="field">
+            <label>Token information</label>
+            <div class="result" id="jwtInfo"></div>
+          </div>
+          <p class="hint">Decoding does not verify the token's signature or establish trust. Treat the contents as untrusted input. Avoid pasting real credentials or sensitive tokens into shared devices.</p>
+        </section>
+
+        <section class="empty-state hidden" id="emptyState">
+          <div style="font-size:30px;margin-bottom:8px">⌕</div>
+          <strong>No tools found</strong>
+          <div class="hint">Try another search term.</div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div>© <span id="year"></span> <strong>DevHub</strong>. Made for developers.</div>
+    <div>Crafted with ♥ by <strong>Sayeef Adnan (সাঈফ আদনান)</strong></div>
+    <div>HTML · CSS · JavaScript</div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+    const panels = [...document.querySelectorAll(".tool-panel")];
+    const navButtons = [...document.querySelectorAll(".tool-link")];
+    let activeTool = "json";
+    let toastTimer;
+
+    function toast(message) {
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    async function copyText(value, label = "Text") {
+      if (!value) {
+        toast("Nothing to copy.");
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(value);
+        } else {
+          const area = document.createElement("textarea");
+          area.value = value;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+          const copied = document.execCommand("copy");
+          area.remove();
+          if (!copied) throw new Error("Copy unavailable");
+        }
+        toast(label + " copied to clipboard!");
+      } catch {
+        toast("Copy failed. Please select and copy manually.");
+      }
+    }
+
+    function setStatus(id, message, good = true) {
+      const el = $(id);
+      el.textContent = message;
+      el.style.color = good ? "var(--success)" : "var(--danger)";
+    }
+
+    function setResult(id, message, state = "") {
+      const el = $(id);
+      el.textContent = message;
+      el.classList.remove("good", "bad");
+      if (state) el.classList.add(state);
+    }
+
+    function showTool(name) {
+      activeTool = name;
+      panels.forEach(panel => panel.classList.toggle("hidden", panel.id !== "panel-" + name));
+      navButtons.forEach(btn => {
+        const selected = btn.dataset.tool === name;
+        btn.classList.toggle("active", selected);
+        btn.setAttribute("aria-current", selected ? "page" : "false");
+      });
+      $("emptyState").classList.add("hidden");
+    }
+
+    navButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        showTool(button.dataset.tool);
+        $("toolSearch").value = "";
+        navButtons.forEach(btn => btn.classList.remove("hidden"));
+      });
+    });
+
+    $("toolSearch").addEventListener("input", event => {
+      const query = event.target.value.trim().toLowerCase();
+      let firstVisible = null;
+
+      navButtons.forEach(btn => {
+        const visible = btn.textContent.toLowerCase().includes(query);
+        btn.classList.toggle("hidden", !visible);
+        if (visible && !firstVisible) firstVisible = btn;
+      });
+
+      if (query && firstVisible) {
+        showTool(firstVisible.dataset.tool);
+        $("emptyState").classList.add("hidden");
+      } else if (query) {
+        panels.forEach(panel => panel.classList.add("hidden"));
+        $("emptyState").classList.remove("hidden");
+      } else {
+        showTool(activeTool);
+      }
+    });
+
+    $("themeToggle").addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      const light = document.body.classList.contains("light");
+      $("themeToggle").textContent = light ? "☾" : "☀";
+      $("themeToggle").setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+      $("themeToggle").title = light ? "Dark theme" : "Light theme";
+      $("themeToggle").blur();
+    });
+
+    $("year").textContent = new Date().getFullYear();
+
+    // JSON FORMATTER
+    function parseJson() {
+      const input = $("jsonInput").value.trim();
+      if (!input) throw new Error("Please enter JSON data first.");
+      return JSON.parse(input);
+    }
+
+    $("jsonInput").addEventListener("input", () => {
+      $("jsonInputCount").textContent = $("jsonInput").value.length + " characters";
+    });
+
+    $("jsonFormat").addEventListener("click", () => {
+      try {
+        $("jsonOutput").value = JSON.stringify(parseJson(), null, 2);
+        setStatus("jsonStatus", "✓ Valid JSON");
+        toast("JSON formatted successfully.");
+      } catch (error) {
+        $("jsonOutput").value = "";
+        setStatus("jsonStatus", error.message, false);
+      }
+    });
+
+    $("jsonMinify").addEventListener("click", () => {
+      try {
+        $("jsonOutput").value = JSON.stringify(parseJson());
+        setStatus("jsonStatus", "✓ Minified successfully");
+        toast("JSON minified.");
+      } catch (error) {
+        $("jsonOutput").value = "";
+        setStatus("jsonStatus", error.message, false);
+      }
+    });
+
+    $("jsonValidate").addEventListener("click", () => {
+      try {
+        parseJson();
+        setStatus("jsonStatus", "✓ JSON is valid");
+        toast("Valid JSON!");
+      } catch (error) {
+        setStatus("jsonStatus", error.message, false);
+      }
+    });
+
+    $("jsonCopy").addEventListener("click", () => copyText($("jsonOutput").value, "JSON"));
+    $("jsonClear").addEventListener("click", () => {
+      $("jsonInput").value = "";
+      $("jsonOutput").value = "";
+      $("jsonInputCount").textContent = "0 characters";
+      setStatus("jsonStatus", "Ready");
+    });
+
+    // BASE64: Unicode-safe encoding and strict decoding
+    $("base64Encode").addEventListener("click", () => {
+      try {
+        const text = $("base64Input").value;
+        if (!text) throw new Error("Enter text to encode.");
+        $("base64Output").value = btoa(
+          Array.from(new TextEncoder().encode(text), byte => String.fromCharCode(byte)).join("")
+        );
+        setStatus("base64Status", "✓ Encoded successfully");
+      } catch (error) {
+        setStatus("base64Status", error.message, false);
+      }
+    });
+
+    $("base64Decode").addEventListener("click", () => {
+      try {
+        const input = $("base64Input").value.trim();
+        if (!input) throw new Error("Enter Base64 data to decode.");
+        if (!/^[A-Za-z0-9+/]*={0,2}$/.test(input) || input.length % 4 === 1) {
+          throw new Error("Invalid Base64 format.");
+        }
+        const binary = atob(input);
+        const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+        $("base64Output").value = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+        setStatus("base64Status", "✓ Decoded successfully");
+      } catch (error) {
+        $("base64Output").value = "";
+        setStatus("base64Status", error.message || "Invalid Base64 input.", false);
+      }
+    });
+
+    $("base64Copy").addEventListener("click", () => copyText($("base64Output").value, "Result"));
+    $("base64Clear").addEventListener("click", () => {
+      $("base64Input").value = "";
+      $("base64Output").value = "";
+      setStatus("base64Status", "Ready");
+    });
+
+    // UUID GENERATOR
+    function makeUuid() {
+      if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+
+      if (typeof crypto.getRandomValues !== "function") {
+        throw new Error("Secure random generation is unavailable. Open this app in a modern browser or localhost.");
+      }
+
+      const bytes = crypto.getRandomValues(new Uint8Array(16));
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const hex = [...bytes].map(b => b.toString(16).padStart(2, "0")).join("");
+      return [
+        hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16),
+        hex.slice(16, 20), hex.slice(20)
+      ].join("-");
+    }
+
+    $("uuidGenerate").addEventListener("click", () => {
+      try {
+        const count = Number($("uuidCount").value);
+        $("uuidOutput").value = Array.from({ length: count }, makeUuid).join("\n");
+        setStatus("uuidStatus", count + " UUIDs generated");
+      } catch (error) {
+        setStatus("uuidStatus", error.message, false);
+      }
+    });
+
+    $("uuidCopy").addEventListener("click", () => copyText($("uuidOutput").value, "UUIDs"));
+
+    $("uuidDownload").addEventListener("click", () => {
+      const text = $("uuidOutput").value;
+      if (!text) return toast("Generate UUIDs first.");
+      downloadFile("devhub-uuids.txt", text, "text/plain;charset=utf-8");
+    });
+
+    function downloadFile(filename, content, type) {
+      const url = URL.createObjectURL(new Blob([content], { type }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // COLOR STUDIO
+    function hexToRgb(hex) {
+      const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (!match) throw new Error("Enter a valid 6-digit HEX color, e.g. #8b7cff.");
+      return match.slice(1).map(v => parseInt(v, 16));
+    }
+
+    function rgbToHsl(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      const delta = max - min;
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+
+      if (delta !== 0) {
+        s = delta / (1 - Math.abs(2 * l - 1));
+        switch (max) {
+          case r: h = 60 * (((g - b) / delta) % 6); break;
+          case g: h = 60 * ((b - r) / delta + 2); break;
+          default: h = 60 * ((r - g) / delta + 4);
+        }
+      }
+
+      h = (h + 360) % 360;
+      return `hsl(${Math.round(h)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+    }
+
+    function updateColorFromHex() {
+      const hex = $("colorHex").value.trim();
+      try {
+        const rgb = hexToRgb(hex);
+        const normalized = "#" + rgb.map(n => n.toString(16).padStart(2, "0")).join("");
+        $("colorPicker").value = normalized;
+        $("colorHex").value = normalized;
+        $("colorSwatch").style.background = normalized;
+        $("colorRgb").value = `rgb(${rgb.join(", ")})`;
+        $("colorHsl").value = rgbToHsl(...rgb);
+      } catch {
+        $("colorSwatch").style.background = "var(--surface-2)";
+        $("colorRgb").value = "";
+        $("colorHsl").value = "";
+      }
+    }
+
+    $("colorPicker").addEventListener("input", () => {
+      $("colorHex").value = $("colorPicker").value;
+      updateColorFromHex();
+    });
+
+    $("colorHex").addEventListener("input", updateColorFromHex);
+    $("colorCopyHex").addEventListener("click", () => copyText($("colorHex").value, "HEX"));
+    $("colorCopyRgb").addEventListener("click", () => copyText($("colorRgb").value, "RGB"));
+    $("colorCopyHsl").addEventListener("click", () => copyText($("colorHsl").value, "HSL"));
+
+    function updateGradient() {
+      const start = $("gradientStart").value;
+      const end = $("gradientEnd").value;
+      const angle = $("gradientAngle").value;
+      const css = `linear-gradient(${angle}deg, ${start}, ${end})`;
+      $("gradientAngleValue").textContent = angle + "°";
+      $("gradientPreview").style.background = css;
+      $("gradientOutput").value = `background: ${css};`;
+    }
+
+    ["gradientStart", "gradientEnd", "gradientAngle"].forEach(id =>
+      $(id).addEventListener("input", updateGradient)
+    );
+    $("gradientCopy").addEventListener("click", () => copyText($("gradientOutput").value, "CSS"));
+
+    // REGEX TESTER
+    let lastRegexMatches = [];
+
+    $("regexTest").addEventListener("click", () => {
+      try {
+        const pattern = $("regexPattern").value;
+        const flags = $("regexFlags").value.trim();
+        const text = $("regexText").value;
+        const regex = new RegExp(pattern, flags);
+        const matches = [];
+        let match;
+
+        if (regex.global || regex.sticky) {
+          let iterations = 0;
+          while ((match = regex.exec(text)) !== null) {
+            matches.push({
+              text: match[0],
+              index: match.index,
+              groups: match.slice(1)
+            });
+            if (match[0] === "") regex.lastIndex++;
+            if (++iterations > 10000) throw new Error("Too many matches. Narrow your pattern.");
+          }
+        } else {
+          match = regex.exec(text);
+          if (match) matches.push({
+            text: match[0],
+            index: match.index,
+            groups: match.slice(1)
+          });
+        }
+
+        lastRegexMatches = matches;
+        setResult("regexOutput",
+          matches.length
+            ? matches.map((m, i) =>
+                `${i + 1}. "${m.text}"\n   Index: ${m.index}` +
+                (m.groups.length ? `\n   Groups: ${JSON.stringify(m.groups)}` : "")
+              ).join("\n\n")
+            : "No matches found.",
+          matches.length ? "good" : ""
+        );
+        $("regexCount").textContent = matches.length + (matches.length === 1 ? " match" : " matches");
+        $("regexMatches").replaceChildren();
+
+        matches.forEach((m, i) => {
+          const chip = document.createElement("button");
+          chip.className = "chip";
+          chip.type = "button";
+          chip.textContent = `${i + 1}: ${m.text || "(empty match)"}`;
+          chip.title = "Click to copy this match";
+          chip.addEventListener("click", () => copyText(m.text, "Match"));
+          $("regexMatches").appendChild(chip);
+        });
+      } catch (error) {
+        lastRegexMatches = [];
+        setResult("regexOutput", error.message, "bad");
+        $("regexCount").textContent = "Invalid expression";
+        $("regexMatches").replaceChildren();
+      }
+    });
+
+    $("regexCopy").addEventListener("click", () =>
+      copyText(lastRegexMatches.map(m => m.text).join("\n"), "Matches")
+    );
+
+    $("regexClear").addEventListener("click", () => {
+      $("regexPattern").value = "";
+      $("regexFlags").value = "g";
+      $("regexText").value = "";
+      $("regexCount").textContent = "Not tested";
+      lastRegexMatches = [];
+      setResult("regexOutput", "");
+      $("regexMatches").replaceChildren();
+    });
+
+    // JWT DECODER
+    function decodeBase64UrlJson(segment) {
+      if (!segment || !/^[A-Za-z0-9_-]+$/.test(segment)) {
+        throw new Error("Invalid Base64URL token segment.");
+      }
+
+      const base64 = segment.replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64 + "=".repeat((4 - base64.length % 4) % 4);
+      const binary = atob(padded);
+      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+      const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      const value = JSON.parse(decoded);
+
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        throw new Error("JWT header and payload must be JSON objects.");
+      }
+      return value;
+    }
+
+    $("jwtDecode").addEventListener("click", () => {
+      try {
+        const token = $("jwtInput").value.trim().replace(/^Bearer\s+/i, "");
+        if (!token) throw new Error("Paste a JWT first.");
+
+        const parts = token.split(".");
+        if (parts.length !== 3 || !parts[2]) {
+          throw new Error("Expected a signed JWT with three non-empty segments.");
+        }
+
+        const header = decodeBase64UrlJson(parts[0]);
+        const payload = decodeBase64UrlJson(parts[1]);
+
+        $("jwtHeader").value = JSON.stringify(header, null, 2);
+        $("jwtPayload").value = JSON.stringify(payload, null, 2);
+
+        const info = [];
+        info.push("Algorithm: " + (typeof header.alg === "string" ? header.alg : "Not specified"));
+        info.push("Token type: " + (typeof header.typ === "string" ? header.typ : "Not specified"));
+
+        if (typeof payload.iss === "string") info.push("Issuer: " + payload.iss);
+        if (typeof payload.sub === "string") info.push("Subject: " + payload.sub);
+        if (typeof payload.aud === "string" || Array.isArray(payload.aud)) {
+          info.push("Audience: " + (Array.isArray(payload.aud) ? payload.aud.join(", ") : payload.aud));
+        }
+
+        for (const claim of ["iat", "nbf", "exp"]) {
+          if (typeof payload[claim] === "number" && Number.isFinite(payload[claim])) {
+            const date = new Date(payload[claim] * 1000);
+            info.push(claim.toUpperCase() + ": " +
+              (Number.isNaN(date.getTime()) ? "Invalid timestamp" : date.toISOString()));
+          }
+        }
+
+        info.push("");
+        info.push("Signature: Present but NOT verified.");
+        info.push("Decoded content is untrusted until independently verified.");
+
+        setResult("jwtInfo", info.join("\n"), "good");
+        setStatus("jwtStatus", "✓ Decoded; not verified");
+        toast("JWT decoded successfully.");
+      } catch (error) {
+        $("jwtHeader").value = "";
+        $("jwtPayload").value = "";
+        setResult("jwtInfo", error.message, "bad");
+        setStatus("jwtStatus", "Decode failed", false);
+      }
+    });
+
+    $("jwtCopyHeader").addEventListener("click", () => copyText($("jwtHeader").value, "Header"));
+    $("jwtCopyPayload").addEventListener("click", () => copyText($("jwtPayload").value, "Payload"));
+
+    $("jwtClear").addEventListener("click", () => {
+      $("jwtInput").value = "";
+      $("jwtHeader").value = "";
+      $("jwtPayload").value = "";
+      setResult("jwtInfo", "");
+      setStatus("jwtStatus", "Not decoded");
+    });
+
+    // Initial render
+    updateColorFromHex();
+    updateGradient();
+    showTool("json");
+  </script>
+</body>
+</html>
